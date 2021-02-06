@@ -15,7 +15,9 @@ public class Ball : MonoBehaviour
     public Vector3 velocity;
     bool start = true;
     public float speed = 5.0f;
-    float sign;
+    int[] sign = new int[] { 2, -1 };
+    int randValue;
+    float x_position;
 
     public Vector3 Velocity
     {
@@ -25,7 +27,7 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
-        sign = Random.Range(-1.0f, 1.0f);
+        randValue = Random.Range(0, sign.Length);
         position = transform.position;
         if (m_MyObject != null)
             ball_Collider = m_MyObject.GetComponent<Collider2D>();
@@ -48,20 +50,21 @@ public class Ball : MonoBehaviour
     {
         if (start)
         {
-            position.x += ChangeDirection(sign);
+            position.x += ChangeDirection(1);//sign[randValue]);
         }
         if (ball_Collider.bounds.Intersects(m_Collider2.bounds))
         {
-            // velocity = velocity + Vector3.right;
+            start = false;
             change = -1;
-            speed += 0.1f;
+            if (x_position != transform.position.x)
+                speed += 0.1f;
         }
         if (ball_Collider.bounds.Intersects(m_Collider3.bounds))
         {
             start = false;
             change = 1;
-            speed += 0.1f;
-            // velocity = velocity + Vector3.left;
+            if (x_position != transform.position.x)
+                speed += 0.1f;
         }
         if (ball_Collider.bounds.Intersects(paddle_Collider.bounds))
         {
@@ -86,16 +89,14 @@ public class Ball : MonoBehaviour
                touch = true;
                 speed += 0.1f;
             }
-            // velocity = velocity + Vector3.up;
         }
         if (ball_Collider.bounds.Intersects(m_Collider4.bounds))
         {
             touch = true;
-            speed += 0.2f;
-            //  velocity = velocity + Vector3.down;
+            speed += 0.1f;
         }
        transform.Rotate(Vector3.forward * 5f * speed, Space.World);
-       // transform.Translate(velocity * Time.deltaTime, Space.World);
+        // transform.Translate(velocity * Time.deltaTime, Space.World);
        if (!touch)
         {
             position.y += Time.deltaTime * speed;
@@ -106,5 +107,6 @@ public class Ball : MonoBehaviour
         }
         position.x += ChangeDirection(change);
         transform.position = position;
+        x_position = transform.position.x;
     }
 }
