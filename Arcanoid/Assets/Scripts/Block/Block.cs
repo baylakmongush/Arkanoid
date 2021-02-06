@@ -11,14 +11,17 @@ public class Block : MonoBehaviour
     public Text score;
     int sc;
     public GameObject Score;
+    Ball classBall;
 
     void Start()
     {
         block_Collider = GetComponent<BoxCollider2D>();
         if (Ball != null)
             coll = Ball.GetComponent<CircleCollider2D>();
+
         sc = PlayerPrefs.GetInt("score");
         score.text = sc.ToString();
+        classBall = Ball.GetComponent<Ball>();
     }
 
     // Update is called once per frame
@@ -26,36 +29,29 @@ public class Block : MonoBehaviour
     {
         if (block_Collider.bounds.Intersects(coll.bounds))
         {
-            if (Ball.transform.position.y < (transform.position.y + block_Collider.size.y / 2) && Ball.transform.position.y > (transform.position.y - block_Collider.size.y / 2) && Ball.transform.position.x < transform.position.x)
+            if (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) && Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) && Ball.transform.position.x <= transform.position.x)
             {
-                Ball.GetComponent<Ball>().change = 1;
+                //Debug.Log();
+                classBall.change = 1;
+                classBall.speed += 0.1f;
             }
-            if (Ball.transform.position.y < (transform.position.y + block_Collider.size.y / 2) && Ball.transform.position.y > (transform.position.y - block_Collider.size.y / 2) && Ball.transform.position.x > transform.position.x)
+            if (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) && Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) && Ball.transform.position.x >= transform.position.x)
             {
-                Ball.GetComponent<Ball>().change = -1;
+                classBall.change = -1;
+                classBall.speed += 0.1f;
             }
-            if (Ball.transform.position.x < (transform.position.x - block_Collider.size.x / 2) && Ball.transform.position.x > (transform.position.x + block_Collider.size.x / 2) && Ball.transform.position.y > transform.position.y)
+            if (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) && Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) && Ball.transform.position.y >= transform.position.y)
             {
-                Ball.GetComponent<Ball>().touch = false;
+                classBall.touch = false;
+                classBall.speed += 0.1f;
             }
-            if (Ball.transform.position.x < (transform.position.x - block_Collider.size.x / 2) && Ball.transform.position.x > (transform.position.x + block_Collider.size.x / 2) && Ball.transform.position.y < transform.position.y)
+            if (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) && Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) && Ball.transform.position.y <= transform.position.y)
             {
-                Ball.GetComponent<Ball>().touch = true;
+                classBall.touch = true;
+                classBall.speed += 0.1f;
             }
             Score.GetComponent<SCore>().detected = true;
             Destroy(gameObject);
-            // if (block_Collider.bounds.size.x)
-            // Ball.GetComponent<Ball>().Velocity += Vector3.down;
-            /*            Vector3 newVec = Ball.transform.position - transform.position;
-                        if (Ball.transform.position.y < (transform.position.y + block_Collider.size.y / 2) && Ball.transform.position.y > (transform.position.y - block_Collider.size.y / 2))
-                        {
-                            Debug.Log(newVec.magnitude);
-                            if (newVec.magnitude == (coll.radius + block_Collider.size.x / 2))
-                            {
-                                Ball.GetComponent<Ball>().Velocity += Vector3.left;
-
-                            }*/
         }
-        Debug.Log("kk" + block_Collider.size.x);
     }
 }

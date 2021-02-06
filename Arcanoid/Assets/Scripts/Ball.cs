@@ -6,16 +6,16 @@ public class Ball : MonoBehaviour
 {
     Vector2 position;
     public bool touch = false;
-    bool isPaddle = false;
     public GameObject m_MyObject, m_NewObject, newobj, aaaaa;
     public Collider2D ball_Collider;
     BoxCollider2D m_Collider2, m_Collider3, m_Collider4, paddle_Collider;
     List<BoxCollider2D> block_Collider;
     public GameObject Paddle;
-    GameObject[] Block;
     public float change = -1.0f;
     public Vector3 velocity;
     bool start = true;
+    public float speed = 5.0f;
+    float sign;
 
     public Vector3 Velocity
     {
@@ -25,8 +25,7 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
-        Block = GameObject.FindGameObjectsWithTag("Block");
-        velocity = new Vector3(2, 1, 0);
+        sign = Random.Range(-1.0f, 1.0f);
         position = transform.position;
         if (m_MyObject != null)
             ball_Collider = m_MyObject.GetComponent<Collider2D>();
@@ -38,70 +37,72 @@ public class Ball : MonoBehaviour
             paddle_Collider = Paddle.GetComponent<BoxCollider2D>();
         if (aaaaa != null)
             m_Collider4 = aaaaa.GetComponent<BoxCollider2D>();
-/*        foreach (GameObject Bl in Block)
-        {
-            if (Bl != null)
-               block_Collider.Add(Bl.GetComponent<BoxCollider2D>());
-        }*/
     }
 
-    float   ChangeDirection(float sign)
+    float   ChangeDirection(float _sign)
     {
-        return (Mathf.Sin(Mathf.Clamp01(Time.deltaTime) * Mathf.PI * (-1) * sign));
+        return (Mathf.Sin(Mathf.Clamp01(Time.deltaTime) * Mathf.PI * (-1) * _sign));
     }
 
     void Update()
     {
         if (start)
         {
-            position.x += ChangeDirection(-1);
+            position.x += ChangeDirection(sign);
         }
         if (ball_Collider.bounds.Intersects(m_Collider2.bounds))
         {
             // velocity = velocity + Vector3.right;
             change = -1;
+            speed += 0.1f;
         }
-        else if (ball_Collider.bounds.Intersects(m_Collider3.bounds))
+        if (ball_Collider.bounds.Intersects(m_Collider3.bounds))
         {
             start = false;
             change = 1;
+            speed += 0.1f;
             // velocity = velocity + Vector3.left;
         }
-        else if (ball_Collider.bounds.Intersects(paddle_Collider.bounds))
+        if (ball_Collider.bounds.Intersects(paddle_Collider.bounds))
         {
-            if (transform.position.y < (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y > (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x < Paddle.transform.position.x)
+            touch = false;
+            if (transform.position.y <= (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y >= (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x <= Paddle.transform.position.x)
             {
                 change = 1;
+                speed += 0.1f;
             }
-            if (transform.position.y < (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y > (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x > Paddle.transform.position.x)
+            if (transform.position.y <= (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y >= (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x >= Paddle.transform.position.x)
             {
                 change = -1;
+                speed += 0.1f;
             }
-            if (transform.position.x < (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x > (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y > Paddle.transform.position.y)
+            if (transform.position.x >= (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x <= (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y >= Paddle.transform.position.y)
             {
                touch = false;
+                speed += 0.1f;
             }
-            if (transform.position.x < (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x > (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y < Paddle.transform.position.y)
+            if (transform.position.x >= (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x <= (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y <= Paddle.transform.position.y)
             {
                touch = true;
+                speed += 0.1f;
             }
-            touch = false;
             // velocity = velocity + Vector3.up;
         }
-        else if (ball_Collider.bounds.Intersects(m_Collider4.bounds))
+        if (ball_Collider.bounds.Intersects(m_Collider4.bounds))
         {
             touch = true;
-          //  velocity = velocity + Vector3.down;
+            speed += 0.2f;
+            //  velocity = velocity + Vector3.down;
         }
-       transform.Rotate(Vector3.forward * 5f, Space.World);
+       transform.Rotate(Vector3.forward * 5f * speed, Space.World);
        // transform.Translate(velocity * Time.deltaTime, Space.World);
        if (!touch)
         {
-            position.y += Time.deltaTime * 2.0f;
+            position.y += Time.deltaTime * speed;
         }
        else
         {
-            position.y -= Time.deltaTime * 2.0f;
+            position.y -= Time.deltaTime * speed;
         }
         position.x += ChangeDirection(change);
         transform.position = position;

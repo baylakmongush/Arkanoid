@@ -22,7 +22,7 @@ public class Paddle : MonoBehaviour
         horiz = Input.GetAxis("Horizontal");
         if (horiz != 0)
         {
-            new_position.x += horiz * Time.deltaTime * 6;
+            new_position.x += horiz * Time.deltaTime * 8.0f;
         }
         transform.position = new_position.x > (WallL.transform.position.x + 1)
                                             && new_position.x < (WallR.transform.position.x - 1) ? new_position :
