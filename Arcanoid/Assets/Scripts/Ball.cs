@@ -33,7 +33,6 @@ public class Ball : MonoBehaviour
         {
             Block some = blocks.GetComponent<Block>();
             blockClass.Add(some);
-            Debug.Log(blocks);
         }
         speed = DataScript.ball_speed;
         randValue = Random.Range(0, sign.Length);
@@ -53,10 +52,15 @@ public class Ball : MonoBehaviour
     void Update()
     {
         speed = DataScript.ball_speed;
+
+        /*
+         * Change start direction of moving
+         */
         if (start)
         {
             position.x += ChangeDirection(sign[randValue]);
         }
+
          WallsCollision();
         /*
          *  Check collisions with paddle
