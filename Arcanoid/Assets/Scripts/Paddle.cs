@@ -11,17 +11,11 @@ public class Paddle : MonoBehaviour
     public GameObject WallL;
     BoxCollider2D paddle_Collider;
     float speed = 8.0f;
-    public GameObject Ball;
-    CircleCollider2D coll;
-    Ball classBall;
 
     void Start()
     {
         new_position = transform.position;
         paddle_Collider = GetComponent<BoxCollider2D>();
-        if (Ball != null)
-            coll = Ball.GetComponent<CircleCollider2D>();
-        classBall = Ball.GetComponent<Ball>();
     }
 
     void Update()
@@ -32,31 +26,31 @@ public class Paddle : MonoBehaviour
         {
             new_position.x += horiz * Time.deltaTime * speed;
         }
-        transform.position = new_position.x > (WallL.transform.position.x + 1)
-                                            && new_position.x < (WallR.transform.position.x - 1) ? new_position :
+        transform.position = (new_position.x - paddle_Collider.size.x / 2) >= (WallL.transform.position.x - 1.5)
+                                            && (new_position.x + paddle_Collider.size.x / 2) <= (WallR.transform.position.x + 1.5) ? new_position :
                                                                                                         transform.position;
     }
 
-    public void CheckCollision()
+    public void CheckCollision(GameObject Ball,  Ball classBall, Collider2D coll)
     {
         if (paddle_Collider.bounds.Intersects(coll.bounds))
         {
-            if (IsLeftSide())
+            if (IsLeftSide(Ball))
             {
                 classBall.change = 1;
                 classBall.speed += 0.05f;
             }
-            if (IsRightSide())
+            if (IsRightSide(Ball))
             {
                 classBall.change = -1;
                 classBall.speed += 0.05f;
             }
-            if (IsTopSide())
+            if (IsTopSide(Ball))
             {
                 classBall.touch = false;
                 classBall.speed += 0.05f;
             }
-            if (IsBottomSide())
+            if (IsBottomSide(Ball))
             {
                 classBall.touch = true;
                 classBall.speed += 0.05f;
@@ -64,28 +58,28 @@ public class Paddle : MonoBehaviour
         }
     }
 
-    private bool IsLeftSide()
+    private bool IsLeftSide(GameObject Ball)
     {
         return (Ball.transform.position.y <= (transform.position.y + paddle_Collider.size.y / 2) &&
                         Ball.transform.position.y >= (transform.position.y - paddle_Collider.size.y / 2) &&
                                     Ball.transform.position.x <= transform.position.x);
     }
 
-    private bool IsRightSide()
+    private bool IsRightSide(GameObject Ball)
     {
         return (Ball.transform.position.y <= (transform.position.y + paddle_Collider.size.y / 2) &&
                         Ball.transform.position.y >= (transform.position.y - paddle_Collider.size.y / 2) &&
                                     Ball.transform.position.x >= transform.position.x);
     }
 
-    private bool IsTopSide()
+    private bool IsTopSide(GameObject Ball)
     {
         return (Ball.transform.position.x >= (transform.position.x - paddle_Collider.size.x / 2) &&
                         Ball.transform.position.x <= (transform.position.x + paddle_Collider.size.x / 2) &&
                                     Ball.transform.position.y >= transform.position.y);
     }
 
-    private bool IsBottomSide()
+    private bool IsBottomSide(GameObject Ball)
     {
         return (Ball.transform.position.x >= (transform.position.x - paddle_Collider.size.x / 2) &&
                         Ball.transform.position.x <= (transform.position.x + paddle_Collider.size.x / 2) &&

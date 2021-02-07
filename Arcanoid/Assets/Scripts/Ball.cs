@@ -11,6 +11,7 @@ public class Ball : MonoBehaviour
     Collider2D ball_Collider;
     BoxCollider2D WallR_Collider, WallL_Collider, Ceil_Collider, paddle_Collider;
     public GameObject Paddle;
+    public GameObject[] Block;
     public float change = -1.0f;
     bool start = true;
     public float speed;
@@ -18,10 +19,15 @@ public class Ball : MonoBehaviour
     int randValue;
     float x_position;
     Paddle paddleClass;
+    Block[] blockClass;
+    Ball curr;
 
     void Start()
     {
+        curr = GetComponent<Ball>();
         paddleClass = Paddle.GetComponent<Paddle>();
+       for (int i = 0; i < Block.Length; ++i)
+            blockClass[i] = Block[i].GetComponent<Block>();
         speed = DataScript.ball_speed;
         randValue = Random.Range(0, sign.Length);
         position = transform.position;
@@ -36,19 +42,22 @@ public class Ball : MonoBehaviour
             Ceil_Collider = Ceil.GetComponent<BoxCollider2D>();
     }
 
-    float   ChangeDirection(float _sign)
+    float ChangeDirection(float _sign)
     {
         return (Mathf.Sin(Mathf.Clamp01(Time.deltaTime) * Mathf.PI * (-1) * _sign));
     }
 
     void Update()
     {
+        speed = DataScript.ball_speed;
         if (start)
         {
             position.x += ChangeDirection(sign[randValue]);
         }
         WallsCollision();
-        paddleClass.CheckCollision();
+        paddleClass.CheckCollision(gameObject, curr, ball_Collider);
+        for (int i = 0; i < blockClass.Length; ++i)
+            blockClass[i].CheckCollision(gameObject, curr, ball_Collider);
         transform.Rotate(Vector3.forward * 5f * speed, Space.World);
         if (!touch)
         {
@@ -87,3 +96,4 @@ public class Ball : MonoBehaviour
         }
     }
 }
+

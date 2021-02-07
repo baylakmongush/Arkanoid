@@ -29,13 +29,13 @@ public class Block : MonoBehaviour
         spriteRenderer.color = Random.ColorHSV(0f, 1f, 1f, 1f, 3f, 1f);
     }
 
-    void Update()
+/*    void Update()
     {
         if (Ball != null)
             CheckCollision();
-    }
+    }*/
 
-    private void CheckCollision()
+    /*private void CheckCollision()
     {
         if (block_Collider.bounds.Intersects(coll.bounds))
         {
@@ -107,6 +107,84 @@ public class Block : MonoBehaviour
     }
 
     private bool IsBottomSide()
+    {
+        return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
+                        Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
+                                    Ball.transform.position.y <= transform.position.y);
+    }*/
+
+    public void CheckCollision(GameObject Ball, Ball classBall, Collider2D coll)
+    {
+        if (block_Collider.bounds.Intersects(coll.bounds))
+        {
+            if (IsLeftSide(Ball))
+            {
+                classBall.change = 1;
+                classBall.speed += 0.05f;
+            }
+            if (IsRightSide(Ball))
+            {
+                classBall.change = -1;
+                classBall.speed += 0.05f;
+            }
+            if (IsTopSide(Ball))
+            {
+                classBall.touch = false;
+                classBall.speed += 0.05f;
+            }
+            if (IsBottomSide(Ball))
+            {
+                classBall.touch = true;
+                classBall.speed += 0.05f;
+            }
+            Score.GetComponent<SCore>().detected = true;
+            DestroyBlock();
+        }
+    }
+
+    void DestroyBlock()
+    {
+        if (lives == 1)
+        {
+            DataScript.CountBlocks--;
+            if (DataScript.CountBlocks == 0 && DataScript.level < 3)
+            {
+                DataScript.level++;
+                Destroy(coll.gameObject);
+                NextLevel.StartLevel(0);
+            }
+            else
+            {
+
+            }
+            Destroy(gameObject);
+        }
+        else
+            lives--;
+    }
+
+    private bool IsLeftSide(GameObject Ball)
+    {
+        return (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) &&
+                        Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) &&
+                                    Ball.transform.position.x <= transform.position.x);
+    }
+
+    private bool IsRightSide(GameObject Ball)
+    {
+        return (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) &&
+                        Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) &&
+                                    Ball.transform.position.x >= transform.position.x);
+    }
+
+    private bool IsTopSide(GameObject Ball)
+    {
+        return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
+                        Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
+                                    Ball.transform.position.y >= transform.position.y);
+    }
+
+    private bool IsBottomSide(GameObject Ball)
     {
         return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
                         Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
