@@ -20,17 +20,31 @@ public class Paddle : MonoBehaviour
 
     void Update()
     {
+        Moving();
+    }
+
+    private void Moving()
+    {
         new_position = transform.position;
         horiz = Input.GetAxis("Horizontal");
         if (horiz != 0)
         {
             new_position.x += horiz * Time.deltaTime * speed;
         }
+        /*
+         * Check wall's bounds
+         */
         transform.position = (new_position.x - paddle_Collider.size.x / 2) >= (WallL.transform.position.x - 1.5)
                                             && (new_position.x + paddle_Collider.size.x / 2) <= (WallR.transform.position.x + 1.5) ? new_position :
                                                                                                         transform.position;
     }
 
+    /// <summary>
+    /// Check collision with ball with paddle's side and change direction of moving
+    /// </summary>
+    /// <param name="Ball"></param>
+    /// <param name="classBall"></param>
+    /// <param name="coll"></param>
     public void CheckCollision(GameObject Ball,  Ball classBall, Collider2D coll)
     {
         if (paddle_Collider.bounds.Intersects(coll.bounds))
@@ -58,6 +72,11 @@ public class Paddle : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Check current side
+    /// </summary>
+    /// <param name="Ball"></param>
+    /// <returns></returns>
     private bool IsLeftSide(GameObject Ball)
     {
         return (Ball.transform.position.y <= (transform.position.y + paddle_Collider.size.y / 2) &&

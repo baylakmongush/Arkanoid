@@ -49,10 +49,6 @@ public class Ball : MonoBehaviour
             Ceil_Collider = Ceil.GetComponent<BoxCollider2D>();
     }
 
-    float ChangeDirection(float _sign)
-    {
-        return (Mathf.Sin(Mathf.Clamp01(Time.deltaTime) * Mathf.PI * (-1) * _sign));
-    }
 
     void Update()
     {
@@ -62,7 +58,14 @@ public class Ball : MonoBehaviour
             position.x += ChangeDirection(sign[randValue]);
         }
          WallsCollision();
+        /*
+         *  Check collisions with paddle
+         */
         paddleClass.CheckCollision(gameObject, curr, ball_Collider);
+
+        /*
+         * For everyone blocks check collisions
+         */
         for (int i = 0; i < 8; i++)
         {
             if (blockClass[i].IsActive())
@@ -70,7 +73,12 @@ public class Ball : MonoBehaviour
                 blockClass[i].CheckCollision(gameObject, curr, ball_Collider);
             }
         }
-        transform.Rotate(Vector3.forward * 5f * speed, Space.World);
+
+        transform.Rotate(Vector3.forward * 5f * speed, Space.World); // Rotate ball
+
+        /*
+         * Change direction by y coords
+         */
         if (!touch)
         {
             position.y += Time.deltaTime * speed;
@@ -82,6 +90,10 @@ public class Ball : MonoBehaviour
         position.x += ChangeDirection(change);
         transform.position = position;
         x_position = transform.position.x;
+
+        /*
+         *Check Game over Zone, if ball fell
+         */
         if (transform.position.y < GameOver.transform.position.y)
         {
             GameOverMenu.SetActive(true);
@@ -91,6 +103,19 @@ public class Ball : MonoBehaviour
         DataScript.ball_speed = speed;
     }
 
+    /// <summary>
+    /// Change direction vector by reflection angle
+    /// </summary>
+    /// <param name="_sign"></param>
+    /// <returns></returns>
+    float ChangeDirection(float _sign)
+    {
+        return (Mathf.Sin(Mathf.Clamp01(Time.deltaTime) * Mathf.PI * (-1) * _sign));
+    }
+
+    /// <summary>
+    /// Check wall collisions and change direction of moving
+    /// </summary>
     private void WallsCollision()
     {
         if (ball_Collider.bounds.Intersects(WallL_Collider.bounds))

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Current class increases size of paddle
+/// </summary>
 public class Resize : Bonus
 {
     Vector3 scale;

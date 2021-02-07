@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Base class of bonuses
+/// </summary>
 abstract public class Bonus : MonoBehaviour
 {
     public Vector3 position;
@@ -14,6 +17,9 @@ abstract public class Bonus : MonoBehaviour
     BoxCollider2D bonus_Collider;
     Ball classBall;
 
+    /// <summary>
+    /// current abstract method descriptions bonus's skills
+    /// </summary>
     public abstract void Skill();
 
     private void Awake()
@@ -38,10 +44,16 @@ abstract public class Bonus : MonoBehaviour
         }
             position.y -= Time.deltaTime * speed;
         transform.position = position;
+        /*
+         * When bonus is in Game over zone
+         */
         if (transform.position.y < GameOver.transform.position.y)
             Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Check collisions with ball
+    /// </summary>
     private void CheckCollision()
     {
         if (bonus_Collider.bounds.Intersects(coll.bounds))

@@ -33,6 +33,13 @@ public class Block : MonoBehaviour
         spriteRenderer.color = Random.ColorHSV(0f, 1f, 1f, 1f, 3f, 1f);
     }
 
+    /// <summary>
+    /// Check collision with ball with block's side and change direction of moving
+    /// </summary>
+    /// <param name="Ball"></param>
+    /// <param name="classBall"></param>
+    /// <param name="coll"></param>
+    /// <returns></returns>
     public bool CheckCollision(GameObject Ball, Ball classBall, Collider2D coll)
     {
         if (block_Collider.bounds.Intersects(coll.bounds))
@@ -69,6 +76,10 @@ public class Block : MonoBehaviour
         return (false);
     }
 
+    /// <summary>
+    /// check live of block
+    /// </summary>
+    /// <returns></returns>
     bool DestroyBlock()
     {
         if (lives == 1)
@@ -95,6 +106,11 @@ public class Block : MonoBehaviour
         return (false);
     }
 
+    /// <summary>
+    /// Check current side
+    /// </summary>
+    /// <param name="Ball"></param>
+    /// <returns></returns>
     private bool IsLeftSide(GameObject Ball)
     {
         return (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) &&
@@ -123,6 +139,10 @@ public class Block : MonoBehaviour
                                     Ball.transform.position.y <= transform.position.y);
     }
 
+    /// <summary>
+    /// Return active status of current game object
+    /// </summary>
+    /// <returns></returns>
     public bool IsActive()
     {
         return (gameObject.activeSelf);
