@@ -89,7 +89,6 @@ public class Block : MonoBehaviour
             {
                 DataScript.level++;
                 Destroy(coll.gameObject);
-                Debug.Log(int.Parse(score.text));
                 PlayerPrefs.SetInt("curr_score", int.Parse(score.text) + 1);
                 NextLevel.StartLevel(0);
             }

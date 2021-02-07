@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball_speed: 5.1000004
   score: 0
-  level: 3
+  level: 1
   CountBlocks: 8
