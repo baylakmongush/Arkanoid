@@ -96,8 +96,8 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   speed: 1
   DataScript: {fileID: 11400000, guid: a734ff87ed58528439891ac5dec610a8, type: 2}
-  Ball: {fileID: 7399565038211948899, guid: 36593c97edbb73044a816206d355d99b, type: 3}
-  Paddle: {fileID: 7738313176887943552, guid: 436dce5c97a5c19428ebf96fb562e187, type: 3}
+  GameOver: {fileID: 8210408683703496865, guid: 617891fcafcda1641bdb99cdc3c878b1,
+    type: 3}
 --- !u!61 &2400312088954335346
 BoxCollider2D:
   m_ObjectHideFlags: 0

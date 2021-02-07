@@ -1,19 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Block : MonoBehaviour
 {
     public DataScript DataScript;
     public GameObject Ball;
+    public GameObject Score;
+    public NextLevel NextLevel;
+    public GameObject[] Bonuses;
+    public GameObject WinMenu;
+    public Text score;
+    SpriteRenderer spriteRenderer;
     CircleCollider2D coll;
     BoxCollider2D block_Collider;
-    public GameObject Score;
     Ball classBall;
-    SpriteRenderer spriteRenderer;
     int lives;
-    public NextLevel NextLevel;
 
     void Start()
     {
@@ -29,91 +33,7 @@ public class Block : MonoBehaviour
         spriteRenderer.color = Random.ColorHSV(0f, 1f, 1f, 1f, 3f, 1f);
     }
 
-/*    void Update()
-    {
-        if (Ball != null)
-            CheckCollision();
-    }*/
-
-    /*private void CheckCollision()
-    {
-        if (block_Collider.bounds.Intersects(coll.bounds))
-        {
-            if (IsLeftSide())
-            {
-                classBall.change = 1;
-                classBall.speed += 0.05f;
-            }
-            if (IsRightSide())
-            {
-                classBall.change = -1;
-                classBall.speed += 0.05f;
-            }
-            if (IsTopSide())
-            {
-                classBall.touch = false;
-                classBall.speed += 0.05f;
-            }
-            if (IsBottomSide())
-            {
-                classBall.touch = true;
-                classBall.speed += 0.05f;
-            }
-            Score.GetComponent<SCore>().detected = true;
-            DestroyBlock();
-        }
-    }
-
-    void DestroyBlock()
-    {
-        if (lives == 1)
-        {
-            DataScript.CountBlocks--;
-            if (DataScript.CountBlocks == 0 && DataScript.level < 3)
-            {
-                DataScript.level++;
-                Destroy(coll.gameObject);
-                NextLevel.StartLevel(0);
-            }
-            else
-            {
-
-            }
-            Destroy(gameObject);
-        }
-        else
-            lives--;
-    }
-
-    private bool IsLeftSide()
-    {
-        return (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) &&
-                        Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) &&
-                                    Ball.transform.position.x <= transform.position.x);
-    }
-
-    private bool IsRightSide()
-    {
-        return (Ball.transform.position.y <= (transform.position.y + block_Collider.size.y / 2) &&
-                        Ball.transform.position.y >= (transform.position.y - block_Collider.size.y / 2) &&
-                                    Ball.transform.position.x >= transform.position.x);
-    }
-
-    private bool IsTopSide()
-    {
-        return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
-                        Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
-                                    Ball.transform.position.y >= transform.position.y);
-    }
-
-    private bool IsBottomSide()
-    {
-        return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
-                        Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
-                                    Ball.transform.position.y <= transform.position.y);
-    }*/
-
-    public void CheckCollision(GameObject Ball, Ball classBall, Collider2D coll)
+    public bool CheckCollision(GameObject Ball, Ball classBall, Collider2D coll)
     {
         if (block_Collider.bounds.Intersects(coll.bounds))
         {
@@ -138,11 +58,18 @@ public class Block : MonoBehaviour
                 classBall.speed += 0.05f;
             }
             Score.GetComponent<SCore>().detected = true;
-            DestroyBlock();
+            if (DataScript.level == 3)
+            {
+                if (Random.value < 0.7)
+                    Instantiate(Bonuses[Random.Range(0, 4)], gameObject.transform.position, Quaternion.identity);
+            }
+            if (DestroyBlock())
+                return (true);
         }
+        return (false);
     }
 
-    void DestroyBlock()
+    bool DestroyBlock()
     {
         if (lives == 1)
         {
@@ -151,16 +78,21 @@ public class Block : MonoBehaviour
             {
                 DataScript.level++;
                 Destroy(coll.gameObject);
+                Debug.Log(int.Parse(score.text));
+                PlayerPrefs.SetInt("curr_score", int.Parse(score.text) + 1);
                 NextLevel.StartLevel(0);
             }
-            else
+            else if (DataScript.CountBlocks == 0 && DataScript.level == 3)
             {
-
+                Time.timeScale = 0;
+                WinMenu.SetActive(true);
             }
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            return (true);
         }
         else
             lives--;
+        return (false);
     }
 
     private bool IsLeftSide(GameObject Ball)
@@ -189,5 +121,10 @@ public class Block : MonoBehaviour
         return (Ball.transform.position.x >= (transform.position.x - block_Collider.size.x / 2) &&
                         Ball.transform.position.x <= (transform.position.x + block_Collider.size.x / 2) &&
                                     Ball.transform.position.y <= transform.position.y);
+    }
+
+    public bool IsActive()
+    {
+        return (gameObject.activeSelf);
     }
 }

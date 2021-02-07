@@ -5,29 +5,36 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public DataScript DataScript;
-    Vector2 position;
     public bool touch = false;
     public GameObject WallR, WallL, Ceil;
-    Collider2D ball_Collider;
-    BoxCollider2D WallR_Collider, WallL_Collider, Ceil_Collider, paddle_Collider;
     public GameObject Paddle;
-    public GameObject[] Block;
+    public GameObject GameOver;
+    public GameObject GameOverMenu;
+    public List<GameObject> Block;
     public float change = -1.0f;
-    bool start = true;
     public float speed;
+    bool start = true;
     int[] sign = new int[] { 2, -1 };
     int randValue;
     float x_position;
+    BoxCollider2D WallR_Collider, WallL_Collider, Ceil_Collider, paddle_Collider;
+    Collider2D ball_Collider;
     Paddle paddleClass;
-    Block[] blockClass;
+    List<Block> blockClass;
     Ball curr;
+    Vector2 position;
 
     void Start()
     {
+        blockClass = new List<Block>();
         curr = GetComponent<Ball>();
         paddleClass = Paddle.GetComponent<Paddle>();
-       for (int i = 0; i < Block.Length; ++i)
-            blockClass[i] = Block[i].GetComponent<Block>();
+        foreach (GameObject blocks in Block)
+        {
+            Block some = blocks.GetComponent<Block>();
+            blockClass.Add(some);
+            Debug.Log(blocks);
+        }
         speed = DataScript.ball_speed;
         randValue = Random.Range(0, sign.Length);
         position = transform.position;
@@ -54,10 +61,15 @@ public class Ball : MonoBehaviour
         {
             position.x += ChangeDirection(sign[randValue]);
         }
-        WallsCollision();
+         WallsCollision();
         paddleClass.CheckCollision(gameObject, curr, ball_Collider);
-        for (int i = 0; i < blockClass.Length; ++i)
-            blockClass[i].CheckCollision(gameObject, curr, ball_Collider);
+        for (int i = 0; i < 8; i++)
+        {
+            if (blockClass[i].IsActive())
+            {
+                blockClass[i].CheckCollision(gameObject, curr, ball_Collider);
+            }
+        }
         transform.Rotate(Vector3.forward * 5f * speed, Space.World);
         if (!touch)
         {
@@ -70,6 +82,12 @@ public class Ball : MonoBehaviour
         position.x += ChangeDirection(change);
         transform.position = position;
         x_position = transform.position.x;
+        if (transform.position.y < GameOver.transform.position.y)
+        {
+            GameOverMenu.SetActive(true);
+            Time.timeScale = 0;
+            Destroy(gameObject);
+        }
         DataScript.ball_speed = speed;
     }
 

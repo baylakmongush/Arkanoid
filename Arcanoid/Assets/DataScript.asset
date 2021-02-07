@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ff42fde66149644a9ff0ecef565f0a6, type: 3}
   m_Name: DataScript
   m_EditorClassIdentifier: 
-  ball_speed: 8.200012
+  ball_speed: 5.1000004
   score: 0
   level: 3
-  CountBlocks: 4
+  CountBlocks: 8
