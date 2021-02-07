@@ -109,6 +109,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d64931f6f99d6764ab1431507f7e632a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DataScript: {fileID: 11400000, guid: a734ff87ed58528439891ac5dec610a8, type: 2}
+  touch: 0
   m_MyObject: {fileID: 7399565038211948899}
   m_NewObject: {fileID: 0}
   newobj: {fileID: 0}
+  aaaaa: {fileID: 0}
+  ball_Collider: {fileID: 0}
+  Paddle: {fileID: 0}
+  change: -1
+  velocity: {x: 0, y: 0, z: 0}
+  speed: 0

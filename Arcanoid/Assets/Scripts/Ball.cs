@@ -4,41 +4,36 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public DataScript DataScript;
     Vector2 position;
     public bool touch = false;
-    public GameObject m_MyObject, m_NewObject, newobj, aaaaa;
-    public Collider2D ball_Collider;
-    BoxCollider2D m_Collider2, m_Collider3, m_Collider4, paddle_Collider;
-    List<BoxCollider2D> block_Collider;
+    public GameObject WallR, WallL, Ceil;
+    Collider2D ball_Collider;
+    BoxCollider2D WallR_Collider, WallL_Collider, Ceil_Collider, paddle_Collider;
     public GameObject Paddle;
     public float change = -1.0f;
-    public Vector3 velocity;
     bool start = true;
-    public float speed = 5.0f;
+    public float speed;
     int[] sign = new int[] { 2, -1 };
     int randValue;
     float x_position;
-
-    public Vector3 Velocity
-    {
-        get => velocity;
-        set => velocity = value;
-    }
+    Paddle paddleClass;
 
     void Start()
     {
+        paddleClass = Paddle.GetComponent<Paddle>();
+        speed = DataScript.ball_speed;
         randValue = Random.Range(0, sign.Length);
         position = transform.position;
-        if (m_MyObject != null)
-            ball_Collider = m_MyObject.GetComponent<Collider2D>();
-        if (m_NewObject != null)
-            m_Collider2 = m_NewObject.GetComponent<BoxCollider2D>();
-        if (m_NewObject != null)
-            m_Collider3 = newobj.GetComponent<BoxCollider2D>();
+        ball_Collider = GetComponent<Collider2D>();
+        if (WallR != null)
+            WallR_Collider = WallR.GetComponent<BoxCollider2D>();
+        if (WallL != null)
+            WallL_Collider = WallL.GetComponent<BoxCollider2D>();
         if (Paddle != null)
             paddle_Collider = Paddle.GetComponent<BoxCollider2D>();
-        if (aaaaa != null)
-            m_Collider4 = aaaaa.GetComponent<BoxCollider2D>();
+        if (Ceil != null)
+            Ceil_Collider = Ceil.GetComponent<BoxCollider2D>();
     }
 
     float   ChangeDirection(float _sign)
@@ -50,63 +45,45 @@ public class Ball : MonoBehaviour
     {
         if (start)
         {
-            position.x += ChangeDirection(1);//sign[randValue]);
+            position.x += ChangeDirection(sign[randValue]);
         }
-        if (ball_Collider.bounds.Intersects(m_Collider2.bounds))
-        {
-            start = false;
-            change = -1;
-            if (x_position != transform.position.x)
-                speed += 0.1f;
-        }
-        if (ball_Collider.bounds.Intersects(m_Collider3.bounds))
-        {
-            start = false;
-            change = 1;
-            if (x_position != transform.position.x)
-                speed += 0.1f;
-        }
-        if (ball_Collider.bounds.Intersects(paddle_Collider.bounds))
-        {
-            touch = false;
-            if (transform.position.y <= (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y >= (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x <= Paddle.transform.position.x)
-            {
-                change = 1;
-                speed += 0.1f;
-            }
-            if (transform.position.y <= (Paddle.transform.position.y + paddle_Collider.size.y / 2) && transform.position.y >= (Paddle.transform.position.y - paddle_Collider.size.y / 2) && transform.position.x >= Paddle.transform.position.x)
-            {
-                change = -1;
-                speed += 0.1f;
-            }
-            if (transform.position.x >= (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x <= (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y >= Paddle.transform.position.y)
-            {
-               touch = false;
-                speed += 0.1f;
-            }
-            if (transform.position.x >= (Paddle.transform.position.x - paddle_Collider.size.x / 2) && transform.position.x <= (Paddle.transform.position.x + paddle_Collider.size.x / 2) && transform.position.y <= Paddle.transform.position.y)
-            {
-               touch = true;
-                speed += 0.1f;
-            }
-        }
-        if (ball_Collider.bounds.Intersects(m_Collider4.bounds))
-        {
-            touch = true;
-            speed += 0.1f;
-        }
-       transform.Rotate(Vector3.forward * 5f * speed, Space.World);
-        // transform.Translate(velocity * Time.deltaTime, Space.World);
-       if (!touch)
+        WallsCollision();
+        paddleClass.CheckCollision();
+        transform.Rotate(Vector3.forward * 5f * speed, Space.World);
+        if (!touch)
         {
             position.y += Time.deltaTime * speed;
         }
-       else
+        else
         {
             position.y -= Time.deltaTime * speed;
         }
         position.x += ChangeDirection(change);
         transform.position = position;
         x_position = transform.position.x;
+        DataScript.ball_speed = speed;
+    }
+
+    private void WallsCollision()
+    {
+        if (ball_Collider.bounds.Intersects(WallL_Collider.bounds))
+        {
+            start = false;
+            change = -1;
+            if (x_position != transform.position.x)
+                speed += 0.05f;
+        }
+        if (ball_Collider.bounds.Intersects(WallR_Collider.bounds))
+        {
+            start = false;
+            change = 1;
+            if (x_position != transform.position.x)
+                speed += 0.05f;
+        }
+        if (ball_Collider.bounds.Intersects(Ceil_Collider.bounds))
+        {
+            touch = true;
+            speed += 0.05f;
+        }
     }
 }

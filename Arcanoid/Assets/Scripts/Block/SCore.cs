@@ -7,10 +7,12 @@ public class SCore : MonoBehaviour
 {
     // Start is called before the first frame update
     public Text score;
-    int sc = 0;
+    public DataScript DataScript;
+    int sc;
     public bool detected = false;
     void Start()
     {
+        sc = DataScript.score;
         score.text = sc.ToString();
     }
 
